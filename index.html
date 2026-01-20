@@ -2,899 +2,374 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Chomin225 Minecraft Server</title>
+  <title>Chomin225 Official Network</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 폰트 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-card: rgba(255, 255, 255, 0.96);
-      --accent: #34c759;
-      --accent-soft: rgba(52, 199, 89, 0.12);
-      --accent-red: #ff5e62;
-      --accent-red-soft: rgba(255, 94, 98, 0.12);
-      --border: rgba(15, 23, 42, 0.08);
-      --text-main: #0f172a;
-      --text-sub: #6b7280;
-      --glass: rgba(255, 255, 255, 0.9);
-      --glow: 0 0 26px rgba(52, 199, 89, 0.45);
-      --radius-lg: 26px;
+      /* 상징색 (Online 기준 기본값) */
+      --primary: #22c55e;
+      --primary-glow: rgba(34, 197, 94, 0.4);
+      --bg-dark: #0f172a;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --glass: rgba(255, 255, 255, 0.75);
+      --text-bright: #ffffff;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* 오프라인 시 변수 자동 변경용 클래스 */
+    body.is-offline {
+      --primary: #ef4444;
+      --primary-glow: rgba(239, 68, 68, 0.4);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       min-height: 100vh;
-      font-family: "Poppins", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background:
-        linear-gradient(180deg, #dbeafe 0%, #eef7ff 35%, #e6f6ea 100%),
-        radial-gradient(circle at top left, rgba(96, 165, 250, 0.25), transparent 60%),
-        radial-gradient(circle at bottom right, rgba(52, 211, 153, 0.25), transparent 60%);
+      font-family: "Pretendard", system-ui, sans-serif;
+      background: #f8fafc;
       color: var(--text-main);
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      line-height: 1.6;
     }
 
-    .grain {
+    /* 동적 배경 비주얼 */
+    .bg-visual {
       position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.04;
-      background-image: url("https://i.imgur.com/Z8a6GZQ.png");
-      background-size: 320px 320px;
-      mix-blend-mode: soft-light;
+      top: 0; left: 0; width: 100%; height: 100%;
       z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15), transparent 40%);
+      transition: var(--transition);
+    }
+    body.is-offline .bg-visual {
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.2), transparent 40%);
     }
 
     .wrapper {
-      width: 100%;
-      max-width: 960px;
-      margin: 0 auto;
+      width: 95%;
+      max-width: 1200px; /* 대형 서버 느낌을 위해 가로폭 대폭 확장 */
+      margin: 40px auto;
+      animation: slideUp 0.8s ease-out;
     }
 
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      box-shadow: 0 26px 70px rgba(15, 23, 42, 0.12);
-      padding: 22px 22px 20px;
-      backdrop-filter: blur(16px);
-      position: relative;
-      overflow: hidden;
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top left, rgba(96, 165, 250, 0.12), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(52, 211, 153, 0.12), transparent 55%);
-      pointer-events: none;
+    /* 메인 카드 박스 */
+    .main-container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
     }
 
-    .card-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* 상단 헤더 + 네비게이션 */
-    .header-row {
+    /* 헤더 섹션 */
+    .hero-section {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 14px;
+      align-items: flex-end;
       flex-wrap: wrap;
+      gap: 20px;
+      border-bottom: 2px solid rgba(0,0,0,0.05);
+      padding-bottom: 30px;
     }
 
-    .header {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 25px;
     }
 
-    .logo {
-      width: 50px;
-      height: 50px;
-      border-radius: 20px;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #a7f3d0 40%, #34c759 65%, #15803d 100%);
+    .logo-box {
+      width: 90px;
+      height: 90px;
+      background: var(--bg-dark);
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--glow);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 20px 40px var(--primary-glow);
+      transition: var(--transition);
     }
 
-    .logo-icon {
-      width: 24px;
-      height: 24px;
-      background:
-        linear-gradient(#0f172a, #0f172a) padding-box,
-        linear-gradient(135deg, #34c759, #22c55e) border-box;
-      border-radius: 6px;
-      border: 2px solid transparent;
-      position: relative;
+    .logo-box:hover { transform: rotate(-5deg) scale(1.05); }
+
+    .brand-text h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 42px; /* 제목 크게 */
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--bg-dark);
     }
 
-    .logo-icon::before,
-    .logo-icon::after {
-      content: "";
-      position: absolute;
-      background: #4ade80;
-    }
-    .logo-icon::before {
-      width: 70%;
-      height: 4px;
-      left: 50%;
-      top: 7px;
-      transform: translateX(-50%);
-      box-shadow: 0 9px 0 #4ade80;
-    }
-    .logo-icon::after {
-      width: 4px;
-      height: 60%;
-      left: 50%;
-      top: 20%;
-      transform: translateX(-50%);
-    }
-
-    .header-text-main {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
+    .brand-text p {
+      font-size: 18px;
       color: var(--text-sub);
+      font-weight: 500;
     }
 
-    .title-row {
+    /* 실시간 상태 배지 */
+    .live-indicator {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: 6px 10px;
-    }
-
-    .title {
-      font-size: 22px;
+      gap: 12px;
+      background: var(--bg-dark);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 100px;
       font-weight: 700;
-      letter-spacing: 0.01em;
+      font-size: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
 
-    .tag-pill {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(241, 245, 249, 0.85);
-      color: var(--text-sub);
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+    .pulse-dot {
+      width: 10px; height: 10px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 var(--primary-glow);
+      animation: pulse 2s infinite;
     }
 
-    .tag-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(52, 199, 89, 0.7);
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 var(--primary-glow); }
+      70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
-    .nav-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .nav-link {
-      font-size: 12px;
-      padding: 7px 11px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      background: rgba(255, 255, 255, 0.9);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: 0.12s ease-out;
-    }
-
-    .nav-link.primary {
-      border-color: rgba(52, 199, 89, 0.9);
-      background: linear-gradient(135deg, #34c759, #22c55e);
-      color: #ffffff;
-      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
-    }
-
-    .nav-link:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
-    }
-
-    .nav-link.primary:hover {
-      box-shadow: 0 12px 28px rgba(34, 197, 94, 0.45);
-    }
-
-    /* 상태 라인 */
-    .status-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 18px;
-      background: linear-gradient(90deg, rgba(187, 247, 208, 0.6), rgba(219, 234, 254, 0.6));
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      margin-bottom: 18px;
-    }
-
-    .status-main {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .status-indicator {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      flex-shrink: 0;
-    }
-
-    .status-indicator.online {
-      background: radial-gradient(circle, #bbf7d0 30%, #22c55e 65%, #15803d 100%);
-      box-shadow: 0 0 14px rgba(34, 197, 94, 0.7);
-    }
-
-    .status-indicator.offline {
-      background: radial-gradient(circle, #fecaca 30%, #f97373 65%, #b91c1c 100%);
-      box-shadow: 0 0 14px rgba(248, 113, 113, 0.7);
-    }
-
-    .status-text-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .status-text {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #022c22;
-    }
-
-    .status-caption {
-      font-size: 11px;
-      color: var(--text-sub);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .status-badge {
-      font-size: 11px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(22, 101, 52, 0.35);
-      background: rgba(22, 163, 74, 0.1);
-      color: #065f46;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      font-weight: 600;
-    }
-
-    .status-badge span {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
-    /* 메인 컨텐츠 */
+    /* 컨텐츠 그리드 */
     .content-grid {
       display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.1fr);
-      gap: 16px;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 30px;
     }
 
-    @media (max-width: 760px) {
-      .content-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    .card-panel {
+      background: white;
+      border-radius: 30px;
+      padding: 35px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      transition: var(--transition);
+      border: 1px solid rgba(0,0,0,0.03);
     }
 
-    /* 좌측: 설명 */
-    .section {
-      background: rgba(248, 250, 252, 0.95);
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 14px 14px 12px;
-      position: relative;
-      overflow: hidden;
-    }
+    .card-panel:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
 
-    .section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top left, rgba(191, 219, 254, 0.35), transparent 55%);
-      opacity: 0.7;
-      pointer-events: none;
-    }
+    h3 { font-size: 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 
-    .section-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .section-header {
+    /* 접속 방법 리스트 */
+    .join-steps { list-style: none; }
+    .join-steps li {
+      background: #f1f5f9;
+      margin-bottom: 15px;
+      padding: 20px;
+      border-radius: 20px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #111827;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .section-title-pill {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--text-sub);
-    }
-
-    .section-body {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    .section-body p + p {
-      margin-top: 7px;
-    }
-
-    .highlight {
-      color: #111827;
+      gap: 15px;
+      font-size: 17px;
       font-weight: 500;
     }
+    .step-num { color: var(--primary); font-weight: 800; font-family: 'Montserrat'; }
 
-    .code-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: #0f172a;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      color: #e5e7eb;
-      margin-top: 8px;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
-    }
-
-    .steps {
-      list-style: none;
-      margin-top: 10px;
-      padding-left: 0;
-    }
-
-    .steps li {
+    /* 서버 정보 테이블 스타일 */
+    .info-list { display: flex; flex-direction: column; gap: 12px; }
+    .info-item {
       display: flex;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-bottom: 5px;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 17px;
     }
+    .info-label { color: var(--text-sub); font-weight: 500; }
+    .info-value { font-weight: 700; color: var(--bg-dark); }
 
-    .steps li span.step-index {
-      font-size: 12px;
-      font-weight: 600;
-      color: #4b5563;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
+    /* 버튼 시스템 */
+    .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 8px 13px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: rgba(255, 255, 255, 0.98);
-      color: var(--text-main);
-      cursor: pointer;
-      transition: 0.12s ease-out;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #34c759, #22c55e);
-      border-color: rgba(52, 199, 89, 0.9);
-      color: #ffffff;
-      box-shadow: 0 12px 30px rgba(52, 199, 89, 0.45);
-    }
-
-    .btn-small {
-      padding: 6px 10px;
-      font-size: 11px;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16);
-    }
-
-    /* 우측: 서버 정보 박스 */
-    .server-panel {
-      background: #0f172a;
+      padding: 16px 32px;
       border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      padding: 13px 13px 12px;
-      position: relative;
-      color: #e5e7eb;
-      overflow: hidden;
-    }
-
-    .server-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top, rgba(59, 130, 246, 0.35), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.25), transparent 65%);
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-    .server-panel-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .server-chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .chip {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.75);
-      background: rgba(15, 23, 42, 0.85);
-      color: #e2e8f0;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .chip-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.17em;
-      opacity: 0.8;
-    }
-
-    .chip-value {
-      font-weight: 600;
-    }
-
-    .server-main-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .server-subtitle {
-      font-size: 11px;
-      color: #cbd5f5;
-      margin-bottom: 10px;
-    }
-
-    .info-row {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      font-size: 12px;
-      color: #cbd5f5;
-      margin-bottom: 8px;
-    }
-
-    .info-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       gap: 10px;
     }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 25px var(--primary-glow); }
+    .btn-dark { background: var(--bg-dark); color: white; }
+    .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
 
-    .info-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #9ca3af;
+    /* 토스트 메시지 (복사 완료 알림) */
+    #toast {
+      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+      background: var(--bg-dark); color: white;
+      padding: 15px 30px; border-radius: 50px;
+      font-weight: 600; z-index: 1000;
+      transition: top 0.5s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
+    #toast.show { top: 30px; }
 
-    .info-value {
-      font-size: 12px;
-      font-weight: 500;
-      color: #e5e7eb;
-    }
-
-    .pill-code {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      color: #e5e7eb;
-    }
-
-    .rule-list {
-      list-style: none;
-      font-size: 11px;
-      color: #cbd5f5;
-      margin-bottom: 8px;
-    }
-
-    .rule-list li {
-      margin-bottom: 4px;
-      display: flex;
-      gap: 6px;
-    }
-
-    .rule-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.9);
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
-
-    .footer-note {
-      font-size: 10px;
-      color: #9ca3af;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      border-top: 1px dashed rgba(148, 163, 184, 0.6);
-      padding-top: 7px;
-      margin-top: 4px;
-    }
-
-    .footer-note span,
-    .footer-note small {
-      white-space: nowrap;
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 18px 14px 16px;
-      }
-      .title {
-        font-size: 20px;
-      }
-      .status-row {
-        padding: 9px 9px;
-      }
+    @media (max-width: 900px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .main-container { padding: 30px; }
+      .brand-text h1 { font-size: 32px; }
     }
   </style>
 </head>
 <body>
-  <div class="grain"></div>
+  <div class="bg-visual"></div>
+  <div id="toast">복사되었습니다!</div>
 
   <div class="wrapper">
-    <div class="card">
-      <div class="card-inner">
-        <!-- 헤더 + 네비게이션 -->
-        <div class="header-row">
-          <div class="header">
-            <div class="logo">
-              <div class="logo-icon"></div>
-            </div>
-            <div class="header-text-main">
-              <div class="label">Minecraft Bedrock Server</div>
-              <div class="title-row">
-                <div class="title">Chomin225 · 평지 생존 & 랭크 서버</div>
-                <div class="tag-pill">
-                  <span class="tag-dot"></span>
-                  <span>Bedrock · Xbox 친구 접속</span>
-                </div>
-              </div>
-            </div>
+    <main class="main-container">
+      <section class="hero-section">
+        <div class="brand">
+          <div class="logo-box">
+            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 16V8L12 3L3 8V16L12 21L21 16Z" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 21V12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M3 8L12 12L21 8" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
+          <div class="brand-text">
+            <p id="top-label">Minecraft Bedrock Network</p>
+            <h1>Chomin225 Server</h1>
+          </div>
+        </div>
+        <div class="live-indicator">
+          <div class="pulse-dot"></div>
+          <span id="status-badge-text">SERVER ONLINE</span>
+        </div>
+      </section>
 
-          <div class="nav-actions">
-            <a class="nav-link" href="https://www.xbox.com/ko-KR/play/user/Chomin02025" target="_blank" rel="noreferrer">
-              🎮 Xbox 프로필
-            </a>
-            <a class="nav-link primary" href="https://discord.gg/5vXGQmGyZf" target="_blank" rel="noreferrer">
-              💬 공식 디스코드 참여
-            </a>
+      <div class="content-grid">
+        <div class="card-panel">
+          <h3>🎮 접속 가이드</h3>
+          <p style="margin-bottom: 25px; font-size: 18px; color: var(--text-sub);">
+            본 서버는 Xbox 친구 추가 기능을 통해 별도의 포트 입력 없이 간편하게 접속할 수 있습니다.
+          </p>
+          <ul class="join-steps">
+            <li>
+              <span class="step-num">01</span>
+              <span>Xbox 앱 혹은 인게임에서 친구 찾기를 누릅니다.</span>
+            </li>
+            <li>
+              <span class="step-num">02</span>
+              <span><strong>Chomin02025</strong> 계정을 검색하여 추가합니다.</span>
+            </li>
+            <li>
+              <span class="step-num">03</span>
+              <span>관리자 승인 후 '친구' 탭의 월드 목록에 서버가 나타납니다.</span>
+            </li>
+          </ul>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="copyNickname('Chomin02025')">📋 닉네임 복사하기</button>
+            <a href="https://discord.gg/5vXGQmGyZf" target="_blank" class="btn btn-dark">💬 공식 디스코드</a>
           </div>
         </div>
 
-        <!-- 상태 표시줄 -->
-        <div class="status-row">
-          <div class="status-main">
-            <div id="status-indicator" class="status-indicator online"></div>
-            <div class="status-text-wrapper">
-              <div id="status-text" class="status-text">SERVER ONLINE</div>
-              <div id="status-caption" class="status-caption">
-                지금 접속 가능합니다. Xbox에서 친구 추가 후 서버 월드에 참여하세요.
-              </div>
+        <div class="card-panel" style="background: var(--bg-dark); color: white; border: none;">
+          <h3 style="color: var(--primary);">📊 SERVER INFO</h3>
+          <div class="info-list">
+            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
+              <span class="info-label">플랫폼</span>
+              <span class="info-value" style="color: white;">Bedrock (모바일/PC/콘솔)</span>
+            </div>
+            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
+              <span class="info-label">주요 장르</span>
+              <span class="info-value" style="color: white;">평지 생존 / 랭크전</span>
+            </div>
+            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
+              <span class="info-label">버전</span>
+              <span class="info-value" style="color: white;">최신 정식 버전</span>
+            </div>
+            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
+              <span class="info-label">리전</span>
+              <span class="info-value" style="color: white;">South Korea</span>
             </div>
           </div>
-          <div id="status-badge" class="status-badge">
-            <span>LIVE</span>
-            평지 생존 · 랭크 PVP
+          <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px;">
+            <p style="font-size: 14px; opacity: 0.8;">
+              <strong style="color: var(--primary);">NOTICE:</strong> 비인가 프로그램 사용 시 예외 없이 영구 밴 처리됩니다. 매너 플레이를 부탁드립니다.
+            </p>
           </div>
-        </div>
-
-        <!-- 메인 콘텐츠 -->
-        <div class="content-grid">
-          <!-- 좌측: 접속 안내 -->
-          <section class="section">
-            <div class="section-inner">
-              <div class="section-header">
-                <div class="section-title">
-                  <span>접속 가이드</span>
-                </div>
-                <div class="section-title-pill">How to join</div>
-              </div>
-              <div class="section-body">
-                <p>
-                  이 서버는 <span class="highlight">Minecraft Bedrock (Xbox)</span>에서
-                  <span class="highlight">친구 합류 방식</span>으로 접속할 수 있습니다.
-                </p>
-                <p>
-                  아래 Xbox 닉네임으로 친구 신청을 보내고, 관리자가 승인하면
-                  <span class="highlight">친구 탭의 월드 목록에서 서버가 표시</span>됩니다.
-                </p>
-
-                <div class="code-pill">
-                  <span class="dot"></span>
-                  <span>Xbox 닉네임: <strong>Chomin02025</strong></span>
-                </div>
-
-                <ul class="steps">
-                  <li>
-                    <span class="step-index">01.</span>
-                    <span>Xbox에서 <strong>친구 찾기</strong> 메뉴를 엽니다.</span>
-                  </li>
-                  <li>
-                    <span class="step-index">02.</span>
-                    <span><code>Chomin02025</code>를 검색한 뒤 <strong>친구 추가</strong>를 보냅니다.</span>
-                  </li>
-                  <li>
-                    <span class="step-index">03.</span>
-                    <span>관리자가 요청을 확인하고 승인하면,</span>
-                  </li>
-                  <li>
-                    <span class="step-index">04.</span>
-                    <span>Minecraft에서 <strong>친구 탭 → 서버 월드</strong>에 접속할 수 있습니다.</span>
-                  </li>
-                </ul>
-
-                <div class="button-row">
-                  <a class="btn btn-primary" href="https://buly.kr/H6hzq9u" target="_blank" rel="noreferrer">
-                    🔗 친구 추가 & 확인 방법 자세히 보기
-                  </a>
-                  <a class="btn btn-small" href="https://www.xbox.com/ko-KR/play/user/Chomin02025" target="_blank" rel="noreferrer">
-                    🎮 브라우저에서 Xbox 프로필 열기
-                  </a>
-                  <button class="btn btn-small" type="button" onclick="copyNickname()">
-                    📋 닉네임 복사
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 우측: 서버 정보 -->
-          <aside class="server-panel">
-            <div class="server-panel-inner">
-              <div class="server-chip-row">
-                <div class="chip">
-                  <span class="chip-label">Platform</span>
-                  <span class="chip-value">Bedrock · Xbox</span>
-                </div>
-                <div class="chip">
-                  <span class="chip-label">Mode</span>
-                  <span class="chip-value">평지 생존 · 랭크 PVP</span>
-                </div>
-                <div class="chip">
-                  <span class="chip-label">Community</span>
-                  <span class="chip-value">Discord 연동</span>
-                </div>
-              </div>
-
-              <div class="server-main-title">서버 정보</div>
-              <div class="server-subtitle">
-                평지 생존 기반으로 랭크전, 개인 땅, 레이드 등 다양한 콘텐츠를 준비 중입니다.
-                디스코드에서 패치 노트와 공지를 함께 확인하세요.
-              </div>
-
-              <div class="info-row">
-                <div class="info-line">
-                  <span class="info-label">Xbox Nickname</span>
-                  <span class="pill-code">Chomin02025</span>
-                </div>
-                <div class="info-line">
-                  <span class="info-label">Server Owner</span>
-                  <span class="info-value">Chomin225</span>
-                </div>
-                <div class="info-line">
-                  <span class="info-label">Region</span>
-                  <span class="info-value">ASIA · KR</span>
-                </div>
-                <div class="info-line">
-                  <span class="info-label">Discord</span>
-                  <span class="info-value">
-                    <a href="https://discord.gg/5vXGQmGyZf" target="_blank" rel="noreferrer" style="color:#bfdbfe;text-decoration:none;">
-                      discord.gg/5vXGQmGyZf
-                    </a>
-                  </span>
-                </div>
-              </div>
-
-              <ul class="rule-list">
-                <li>
-                  <span class="rule-dot"></span>
-                  <span>핵, 비인가 클라이언트 사용 시 <strong>즉시 영구 차단</strong>됩니다.</span>
-                </li>
-                <li>
-                  <span class="rule-dot"></span>
-                  <span>테러, 도배, 과도한 패드립 등은 경고 없이 <strong>제재</strong>될 수 있습니다.</span>
-                </li>
-                <li>
-                  <span class="rule-dot"></span>
-                  <span>버그나 오류를 발견하면 디스코드 <strong>문의 / 신고 채널</strong>로 알려주세요.</span>
-                </li>
-              </ul>
-
-              <div class="footer-note">
-                <span id="footer-status-text">현재: 서버 오픈 상태</span>
-                <small>Last updated · <span id="last-updated"></span></small>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
-    </div>
+
+      <footer style="display: flex; justify-content: space-between; align-items: center; color: var(--text-sub); font-size: 14px;">
+        <p>&copy; 2024 Chomin225. All Rights Reserved.</p>
+        <p id="update-time">Loading status...</p>
+      </footer>
+    </main>
   </div>
 
   <script>
-    // 여기만 바꾸면 서버 상태가 ONLINE / OFFLINE으로 바뀜
-    const SERVER_OPEN = true; // true = 오픈, false = 닫힘
+    /**
+     * 서버 설정 컨트롤러
+     * true: 온라인 모드 (녹색 테마)
+     * false: 오프라인 모드 (빨간색 테마)
+     */
+    const IS_SERVER_LIVE = true; 
 
-    const statusIndicator = document.getElementById("status-indicator");
-    const statusText = document.getElementById("status-text");
-    const statusCaption = document.getElementById("status-caption");
-    const statusBadge = document.getElementById("status-badge");
-    const footerStatusText = document.getElementById("footer-status-text");
-    const lastUpdated = document.getElementById("last-updated");
+    function initServer() {
+      const body = document.body;
+      const badgeText = document.getElementById('status-badge-text');
+      const topLabel = document.getElementById('top-label');
+      const updateTime = document.getElementById('update-time');
 
-    function updateStatus(open) {
-      if (open) {
-        statusIndicator.classList.remove("offline");
-        statusIndicator.classList.add("online");
-        statusText.textContent = "SERVER ONLINE";
-        statusCaption.textContent = "지금 접속 가능합니다. Xbox에서 친구 추가 후 서버 월드에 들어오세요.";
-        statusBadge.innerHTML = "<span>LIVE</span>평지 생존 · 랭크 PVP";
-        statusBadge.style.borderColor = "rgba(22, 101, 52, 0.45)";
-        statusBadge.style.background = "rgba(22, 163, 74, 0.1)";
-        footerStatusText.textContent = "현재: 서버 오픈 상태";
-      } else {
-        statusIndicator.classList.remove("online");
-        statusIndicator.classList.add("offline");
-        statusText.textContent = "SERVER OFFLINE";
-        statusCaption.textContent = "현재는 서버가 닫혀 있습니다. 디스코드 공지를 통해 재오픈 일정을 확인해주세요.";
-        statusBadge.innerHTML = "<span>STANDBY</span>점검 / 준비 중";
-        statusBadge.style.borderColor = "rgba(248, 113, 113, 0.75)";
-        statusBadge.style.background = "rgba(248, 113, 113, 0.12)";
-        footerStatusText.textContent = "현재: 서버 닫힘 (점검 / 준비 중)";
+      if (!IS_SERVER_LIVE) {
+        body.classList.add('is-offline');
+        badgeText.innerText = "SERVER OFFLINE";
+        topLabel.innerText = "Maintenance Mode";
       }
 
+      // 시간 업데이트
       const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, "0");
-      const d = String(now.getDate()).padStart(2, "0");
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      lastUpdated.textContent = `${y}-${m}-${d} ${hh}:${mm}`;
+      updateTime.innerText = `Last System Check: ${now.getHours()}:${now.getMinutes()} (KST)`;
     }
 
-    function copyNickname() {
-      const nickname = "Chomin02025";
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(nickname).then(
-          () => alert("닉네임이 복사되었습니다: " + nickname),
-          () => fallbackCopy(nickname)
-        );
-      } else {
-        fallbackCopy(nickname);
-      }
+    // 세련된 토스트 알림 기능
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    function fallbackCopy(text) {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.left = "-9999px";
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand("copy");
-        alert("닉네임이 복사되었습니다: " + text);
-      } catch (e) {
-        alert("복사에 실패했습니다. 직접 입력해주세요: " + text);
-      } finally {
-        document.body.removeChild(textarea);
-      }
+    // 닉네임 복사 함수
+    function copyNickname(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`복사 완료: ${text}`);
+      }).catch(() => {
+        alert("복사에 실패했습니다.");
+      });
     }
 
-    updateStatus(SERVER_OPEN);
+    window.onload = initServer;
   </script>
 </body>
 </html>
