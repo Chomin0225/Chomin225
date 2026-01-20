@@ -2,374 +2,626 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Chomin225 Official Network</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <title>CHOMIN225 | 감성 평지 생존</title>
+  
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Jua&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      /* 상징색 (Online 기준 기본값) */
-      --primary: #22c55e;
-      --primary-glow: rgba(34, 197, 94, 0.4);
-      --bg-dark: #0f172a;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --glass: rgba(255, 255, 255, 0.75);
-      --text-bright: #ffffff;
-      --text-main: #1e293b;
-      --text-sub: #64748b;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* 오프라인 시 변수 자동 변경용 클래스 */
-    body.is-offline {
-      --primary: #ef4444;
-      --primary-glow: rgba(239, 68, 68, 0.4);
+      /* 편안하고 자연친화적인 컬러 팔레트 */
+      --primary: #10b981;       /* 차분한 에메랄드 그린 */
+      --primary-dark: #059669;
+      --accent-blue: #3b82f6;   /* 맑은 하늘색 */
+      
+      --bg-overlay: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(248,250,252,0.9) 100%);
+      
+      /* 화이트 글래스모피즘 (애플 스타일) */
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+      
+      --text-main: #1e293b;     /* 진한 네이비 그레이 (완전 검정보다 부드러움) */
+      --text-sub: #64748b;      /* 중간 회색 */
+      
+      --font-main: "Pretendard", -apple-system, sans-serif;
+      --radius: 24px;
+      --transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    html { scroll-behavior: smooth; }
+    
     body {
-      min-height: 100vh;
-      font-family: "Pretendard", system-ui, sans-serif;
-      background: #f8fafc;
+      font-family: var(--font-main);
       color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
       line-height: 1.6;
+      overflow-x: hidden;
+      background-color: #f0f9ff;
     }
 
-    /* 동적 배경 비주얼 */
-    .bg-visual {
+    /* === 배경 비주얼 (밝은 마크 쉐이더) === */
+    .bg-fixed {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -2;
+      /* 맑은 하늘과 초원 느낌의 배경 */
+      background: url('https://images.unsplash.com/photo-1629760946220-5693ee4c46ac?q=80&w=2670&auto=format&fit=crop') no-repeat center center/cover;
+    }
+    
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay); /* 위는 투명, 아래로 갈수록 불투명 화이트 */
+      backdrop-filter: blur(2px);    /* 살짝 흐리게 해서 몽환적인 느낌 */
       z-index: -1;
-      background: 
-        radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.15), transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15), transparent 40%);
-      transition: var(--transition);
-    }
-    body.is-offline .bg-visual {
-      background: 
-        radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.15), transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.2), transparent 40%);
     }
 
-    .wrapper {
-      width: 95%;
-      max-width: 1200px; /* 대형 서버 느낌을 위해 가로폭 대폭 확장 */
-      margin: 40px auto;
-      animation: slideUp 0.8s ease-out;
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* 메인 카드 박스 */
-    .main-container {
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
-      padding: 50px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    /* 헤더 섹션 */
-    .hero-section {
+    /* === 네비게이션 === */
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      padding: 15px 40px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 20px;
-      border-bottom: 2px solid rgba(0,0,0,0.05);
-      padding-bottom: 30px;
+      align-items: center;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      transition: var(--transition);
     }
 
-    .brand {
+    .nav-logo {
+      font-family: 'Jua', sans-serif; /* 귀여운 폰트 */
+      font-size: 24px;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 25px;
+      gap: 10px;
+      text-decoration: none;
     }
-
-    .logo-box {
-      width: 90px;
-      height: 90px;
-      background: var(--bg-dark);
-      border-radius: 24px;
+    
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 20px 40px var(--primary-glow);
-      transition: var(--transition);
-    }
-
-    .logo-box:hover { transform: rotate(-5deg) scale(1.05); }
-
-    .brand-text h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 42px; /* 제목 크게 */
-      font-weight: 900;
-      letter-spacing: -1px;
-      color: var(--bg-dark);
-    }
-
-    .brand-text p {
+      color: white;
       font-size: 18px;
-      color: var(--text-sub);
-      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
     }
 
-    /* 실시간 상태 배지 */
-    .live-indicator {
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: #ecfdf5; /* 아주 연한 초록 */
+      color: var(--primary-dark);
+      font-size: 13px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: var(--bg-dark);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 100px;
-      font-weight: 700;
-      font-size: 15px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      gap: 6px;
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.2);
     }
-
-    .pulse-dot {
-      width: 10px; height: 10px;
-      background: var(--primary);
+    .status-dot {
+      width: 8px; height: 8px;
+      background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 0 0 var(--primary-glow);
-      animation: pulse 2s infinite;
+      animation: breathe 2s infinite ease-in-out;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 var(--primary-glow); }
-      70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    /* === 히어로 섹션 (메인) === */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 20px 60px;
+      position: relative;
     }
 
-    /* 컨텐츠 그리드 */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 30px;
-    }
-
-    .card-panel {
+    .hero-tag {
       background: white;
+      padding: 8px 16px;
       border-radius: 30px;
-      padding: 35px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-      transition: var(--transition);
-      border: 1px solid rgba(0,0,0,0.03);
-    }
-
-    .card-panel:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
-
-    h3 { font-size: 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-
-    /* 접속 방법 리스트 */
-    .join-steps { list-style: none; }
-    .join-steps li {
-      background: #f1f5f9;
-      margin-bottom: 15px;
-      padding: 20px;
-      border-radius: 20px;
-      display: flex;
-      gap: 15px;
-      font-size: 17px;
-      font-weight: 500;
-    }
-    .step-num { color: var(--primary); font-weight: 800; font-family: 'Montserrat'; }
-
-    /* 서버 정보 테이블 스타일 */
-    .info-list { display: flex; flex-direction: column; gap: 12px; }
-    .info-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px dashed #e2e8f0;
-      font-size: 17px;
-    }
-    .info-label { color: var(--text-sub); font-weight: 500; }
-    .info-value { font-weight: 700; color: var(--bg-dark); }
-
-    /* 버튼 시스템 */
-    .btn-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-    .btn {
-      padding: 16px 32px;
-      border-radius: 18px;
-      font-size: 16px;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-      transition: var(--transition);
-      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
       display: inline-flex;
       align-items: center;
+      gap: 6px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .hero h1 {
+      font-family: 'Jua', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.2;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span {
+      background: linear-gradient(120deg, #10b981 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-sub);
+      max-width: 600px;
+      margin-bottom: 40px;
+      word-break: keep-all;
+    }
+
+    /* === 버튼 스타일 (소프트) === */
+    .btn {
+      padding: 14px 28px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn-primary {
+      background: var(--text-main); /* 다크 그레이 배경 */
+      color: white;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      background: #000;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-soft {
+      background: white;
+      color: var(--text-main);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .btn-soft:hover {
+      transform: translateY(-3px);
+      color: var(--accent-blue);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+    }
+
+    /* === 컨텐츠 섹션 === */
+    section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 32px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .section-desc {
+      color: var(--text-sub);
+    }
+
+    /* === 카드 그리드 (화이트 글래스) === */
+    .grid-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 30px;
+      transition: var(--transition);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    .icon-circle {
+      width: 50px; height: 50px;
+      background: #f1f5f9;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+    .card:hover .icon-circle {
+      background: var(--primary);
+      color: white;
+      transform: rotate(-10deg);
+    }
+
+    .card h3 { font-family: 'Jua', sans-serif; font-size: 20px; margin-bottom: 10px; }
+    .card p { font-size: 15px; color: var(--text-sub); line-height: 1.6; }
+
+    /* === 접속 가이드 (스텝 UI) === */
+    .guide-box {
+      background: white;
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .step-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      align-items: flex-start;
+    }
+    .step-item:last-child { margin-bottom: 0; }
+
+    .step-num {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .step-content h4 { font-size: 18px; margin-bottom: 6px; font-weight: 700; }
+    .step-content p { font-size: 14px; color: var(--text-sub); }
+
+    .copy-area {
+      margin-top: 15px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .gamertag {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+
+    /* === 토스트 알림 (깔끔 버전) === */
+    #toast-container {
+      position: fixed;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      color: var(--text-main);
+      padding: 12px 24px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
       gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: var(--transition);
+      border: 1px solid rgba(0,0,0,0.05);
     }
-    .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 25px var(--primary-glow); }
-    .btn-dark { background: var(--bg-dark); color: white; }
-    .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast i { color: var(--primary); }
 
-    /* 토스트 메시지 (복사 완료 알림) */
-    #toast {
-      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-      background: var(--bg-dark); color: white;
-      padding: 15px 30px; border-radius: 50px;
-      font-weight: 600; z-index: 1000;
-      transition: top 0.5s ease;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    /* === 푸터 === */
+    footer {
+      background: white;
+      padding: 60px 20px;
+      text-align: center;
+      border-top: 1px solid #f1f5f9;
     }
-    #toast.show { top: 30px; }
+    .footer-sns {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .sns-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 18px;
+    }
+    .sns-btn:hover {
+      background: var(--text-main);
+      color: white;
+      transform: translateY(-3px);
+    }
 
-    @media (max-width: 900px) {
-      .content-grid { grid-template-columns: 1fr; }
-      .main-container { padding: 30px; }
-      .brand-text h1 { font-size: 32px; }
+    /* === 애니메이션 === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+    }
+    
+    .reveal { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      nav { padding: 15px 20px; }
+      .step-item { flex-direction: column; gap: 10px; }
+      .step-num { margin-bottom: 5px; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-visual"></div>
-  <div id="toast">복사되었습니다!</div>
 
-  <div class="wrapper">
-    <main class="main-container">
-      <section class="hero-section">
-        <div class="brand">
-          <div class="logo-box">
-            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 16V8L12 3L3 8V16L12 21L21 16Z" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 21V12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M3 8L12 12L21 8" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <p id="top-label">Minecraft Bedrock Network</p>
-            <h1>Chomin225 Server</h1>
-          </div>
-        </div>
-        <div class="live-indicator">
-          <div class="pulse-dot"></div>
-          <span id="status-badge-text">SERVER ONLINE</span>
-        </div>
-      </section>
+  <div class="bg-fixed"></div>
+  <div class="bg-overlay"></div>
+  <div id="toast-container"></div>
 
-      <div class="content-grid">
-        <div class="card-panel">
-          <h3>🎮 접속 가이드</h3>
-          <p style="margin-bottom: 25px; font-size: 18px; color: var(--text-sub);">
-            본 서버는 Xbox 친구 추가 기능을 통해 별도의 포트 입력 없이 간편하게 접속할 수 있습니다.
-          </p>
-          <ul class="join-steps">
-            <li>
-              <span class="step-num">01</span>
-              <span>Xbox 앱 혹은 인게임에서 친구 찾기를 누릅니다.</span>
-            </li>
-            <li>
-              <span class="step-num">02</span>
-              <span><strong>Chomin02025</strong> 계정을 검색하여 추가합니다.</span>
-            </li>
-            <li>
-              <span class="step-num">03</span>
-              <span>관리자 승인 후 '친구' 탭의 월드 목록에 서버가 나타납니다.</span>
-            </li>
-          </ul>
-          <div class="btn-group">
-            <button class="btn btn-primary" onclick="copyNickname('Chomin02025')">📋 닉네임 복사하기</button>
-            <a href="https://discord.gg/5vXGQmGyZf" target="_blank" class="btn btn-dark">💬 공식 디스코드</a>
-          </div>
-        </div>
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
+      <span style="margin-left:8px;">CHOMIN225</span>
+    </a>
+    <div id="status-badge" class="status-badge">
+      <div class="status-dot"></div>
+      <span id="status-text">서버 오픈됨</span>
+    </div>
+  </nav>
 
-        <div class="card-panel" style="background: var(--bg-dark); color: white; border: none;">
-          <h3 style="color: var(--primary);">📊 SERVER INFO</h3>
-          <div class="info-list">
-            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
-              <span class="info-label">플랫폼</span>
-              <span class="info-value" style="color: white;">Bedrock (모바일/PC/콘솔)</span>
-            </div>
-            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
-              <span class="info-label">주요 장르</span>
-              <span class="info-value" style="color: white;">평지 생존 / 랭크전</span>
-            </div>
-            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
-              <span class="info-label">버전</span>
-              <span class="info-value" style="color: white;">최신 정식 버전</span>
-            </div>
-            <div class="info-item" style="border-color: rgba(255,255,255,0.1);">
-              <span class="info-label">리전</span>
-              <span class="info-value" style="color: white;">South Korea</span>
-            </div>
-          </div>
-          <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px;">
-            <p style="font-size: 14px; opacity: 0.8;">
-              <strong style="color: var(--primary);">NOTICE:</strong> 비인가 프로그램 사용 시 예외 없이 영구 밴 처리됩니다. 매너 플레이를 부탁드립니다.
-            </p>
+  <header class="hero">
+    <div class="hero-tag">
+      <i class="fa-solid fa-gamepad" style="color:var(--accent-blue)"></i>
+      Minecraft Bedrock Edition
+    </div>
+    
+    <h1>
+      평지에서 시작하는<br>
+      <span>나만의 힐링 생존</span>
+    </h1>
+    
+    <p>
+      복잡한 야생은 이제 그만. 탁 트인 평지에서<br>
+      집을 짓고, 친구와 소소하게 모험을 떠나보세요.
+    </p>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+      <button onclick="copyNickname('Chomin02025')" class="btn btn-primary">
+        <i class="fa-brands fa-xbox"></i> 닉네임 복사
+      </button>
+      <a href="https://discord.gg/5vXGQmGyZf" target="_blank" class="btn btn-soft">
+        <i class="fa-brands fa-discord"></i> 디스코드
+      </a>
+    </div>
+  </header>
+
+  <section class="reveal">
+    <div class="section-header">
+      <h2 class="section-title">서버 이야기</h2>
+      <p class="section-desc">우리 서버만의 특별한 점들을 소개할게요.</p>
+    </div>
+    
+    <div class="grid-box">
+      <div class="card">
+        <div class="icon-circle" style="background:#ecfdf5; color:#10b981;">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <h3>평화로운 평지</h3>
+        <p>울퉁불퉁한 지형 스트레스 없이, 원하는 곳 어디든 예쁜 건축물을 지을 수 있어요.</p>
+      </div>
+      
+      <div class="card">
+        <div class="icon-circle" style="background:#eff6ff; color:#3b82f6;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>안전한 내 땅</h3>
+        <p>친구만 들어올 수 있는 개인 구역을 설정해보세요. 소중한 건축물을 안전하게 보호해드려요.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon-circle" style="background:#fff7ed; color:#f97316;">
+          <i class="fa-solid fa-khanda"></i>
+        </div>
+        <h3>랭크 & 대결</h3>
+        <p>가끔은 스릴 있게! 1:1 PVP 랭크전으로 실력을 겨루고 멋진 칭호를 얻어보세요.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon-circle" style="background:#f5f3ff; color:#8b5cf6;">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+        <h3>레이드 파티</h3>
+        <p>혼자서는 힘든 보스 몬스터, 친구들과 파티를 맺어 공략하고 희귀 아이템을 나눠가지세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="section-header">
+      <h2 class="section-title">함께 하는 방법</h2>
+      <p class="section-desc">Xbox 친구 추가만 하면 바로 들어올 수 있어요.</p>
+    </div>
+
+    <div class="guide-box">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content" style="flex:1;">
+          <h4>Gamertag 검색</h4>
+          <p>마인크래프트 혹은 Xbox 앱 친구 추가 메뉴에서 아래 닉네임을 검색해주세요.</p>
+          <div class="copy-area">
+            <span class="gamertag">Chomin02025</span>
+            <button class="btn-soft" style="padding:6px 12px; font-size:12px; border-radius:8px;" onclick="copyNickname('Chomin02025')">
+              복사하기
+            </button>
           </div>
         </div>
       </div>
 
-      <footer style="display: flex; justify-content: space-between; align-items: center; color: var(--text-sub); font-size: 14px;">
-        <p>&copy; 2024 Chomin225. All Rights Reserved.</p>
-        <p id="update-time">Loading status...</p>
-      </footer>
-    </main>
-  </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>친구 요청 보내기</h4>
+          <p>친구 추가 버튼을 눌러주세요. 운영자가 확인 후 수락하면 '친구' 탭에 서버가 뜹니다.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>접속하기</h4>
+          <p>월드 목록에서 <strong>[Chomin225 평지 생존]</strong>을 눌러 들어오시면 됩니다! 환영해요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" style="margin-bottom: 60px;">
+    <div class="grid-box">
+      <div class="card" style="border-left: 4px solid #f43f5e;">
+        <h3><i class="fa-solid fa-triangle-exclamation" style="color:#f43f5e; margin-right:5px;"></i> 꼭 지켜주세요</h3>
+        <ul style="list-style: none; color: var(--text-sub); font-size: 14px; margin-top: 10px;">
+          <li style="margin-bottom:8px;">• 다른 유저의 건축물을 부수거나 훔치지 말아주세요.</li>
+          <li style="margin-bottom:8px;">• 욕설이나 비매너 채팅은 서로의 기분을 상하게 합니다.</li>
+          <li>• 핵/치트 사용 시 예고 없이 영구 차단될 수 있습니다.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-circle-question" style="color:var(--accent-blue); margin-right:5px;"></i> 자주 묻는 질문</h3>
+        <div style="margin-top: 10px; font-size: 14px;">
+          <div style="margin-bottom: 12px;">
+            <strong style="color:var(--text-main)">Q. 친구 수락이 안 돼요.</strong>
+            <p style="color:var(--text-sub)">A. 제가 접속 중일 때 순차적으로 받습니다. 디스코드에 남겨주시면 더 빨라요!</p>
+          </div>
+          <div>
+            <strong style="color:var(--text-main)">Q. 서버가 안 보여요.</strong>
+            <p style="color:var(--text-sub)">A. 마인크래프트를 껐다 켜보시거나, 인터넷 연결을 확인해주세요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-sns">
+      <a href="https://discord.gg/5vXGQmGyZf" target="_blank" class="sns-btn"><i class="fa-brands fa-discord"></i></a>
+      <a href="https://www.xbox.com/ko-KR/play/user/Chomin02025" target="_blank" class="sns-btn"><i class="fa-brands fa-xbox"></i></a>
+      <a href="#" class="sns-btn"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p style="color: var(--text-sub); font-size: 14px;">
+      Copyright © 2025 CHOMIN225 Server. All rights reserved.<br>
+      이곳은 편안한 생존을 지향하는 개인 서버입니다.
+    </p>
+  </footer>
 
   <script>
-    /**
-     * 서버 설정 컨트롤러
-     * true: 온라인 모드 (녹색 테마)
-     * false: 오프라인 모드 (빨간색 테마)
-     */
-    const IS_SERVER_LIVE = true; 
+    // === 서버 상태 설정 ===
+    const SERVER_OPEN = true; // true = 오픈, false = 점검중
+    // ====================
 
-    function initServer() {
-      const body = document.body;
-      const badgeText = document.getElementById('status-badge-text');
-      const topLabel = document.getElementById('top-label');
-      const updateTime = document.getElementById('update-time');
+    // 상태 표시 로직
+    const statusBadge = document.getElementById('status-badge');
+    const statusDot = statusBadge.querySelector('.status-dot');
+    const statusText = document.getElementById('status-text');
 
-      if (!IS_SERVER_LIVE) {
-        body.classList.add('is-offline');
-        badgeText.innerText = "SERVER OFFLINE";
-        topLabel.innerText = "Maintenance Mode";
-      }
-
-      // 시간 업데이트
-      const now = new Date();
-      updateTime.innerText = `Last System Check: ${now.getHours()}:${now.getMinutes()} (KST)`;
+    if (!SERVER_OPEN) {
+      statusText.textContent = "점검 중";
+      statusDot.style.background = "#f43f5e"; // 빨간색
+      statusBadge.style.background = "#fff1f2";
+      statusBadge.style.color = "#be123c";
+      statusBadge.style.boxShadow = "inset 0 0 0 1px rgba(244, 63, 94, 0.2)";
     }
 
-    // 세련된 토스트 알림 기능
+    // 토스트 알림 함수
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>${msg}</span>`;
+      
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
     }
 
-    // 닉네임 복사 함수
+    // 닉네임 복사
     function copyNickname(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(`복사 완료: ${text}`);
-      }).catch(() => {
-        alert("복사에 실패했습니다.");
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => showToast(`${text} 복사 완료!`));
+      } else {
+        const t = document.createElement("textarea");
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        document.body.removeChild(t);
+        showToast(`${text} 복사 완료!`);
+      }
+    }
+
+    // 스크롤 애니메이션
+    function reveal() {
+      const reveals = document.querySelectorAll(".reveal");
+      reveals.forEach(el => {
+        const winH = window.innerHeight;
+        const elTop = el.getBoundingClientRect().top;
+        if (elTop < winH - 80) el.classList.add("active");
       });
     }
-
-    window.onload = initServer;
+    window.addEventListener("scroll", reveal);
+    reveal(); // 초기 실행
   </script>
 </body>
 </html>
